@@ -1,0 +1,3 @@
+[submodule "subsocial-js"]
+  path = subsocial-js
+  url = https://github.com/dappforce/subsocial-js.git
