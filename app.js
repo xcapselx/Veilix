@@ -114,3 +114,140 @@ async function initializeSubsocial() {
 }
 
 // Existing code...
+// Function to display user profile
+async function displayUserProfile() {
+    const accounts = await web3Accounts();
+    const selectedAccount = accounts[0];
+    document.getElementById('userName').textContent = `Name: ${selectedAccount.meta.name}`;
+    document.getElementById('userAddress').textContent = `Address: ${selectedAccount.address}`;
+}
+
+// Event listener for updating profile
+document.getElementById('updateProfileButton').addEventListener('click', () => {
+    document.getElementById('updateProfileForm').style.display = 'block';
+});
+
+// Event listener for saving profile
+document.getElementById('saveProfileButton').addEventListener('click', async () => {
+    const newUserName = document.getElementById('newUserName').value;
+    if (newUserName) {
+        const accounts = await web3Accounts();
+        const selectedAccount = accounts[0];
+        // Here you would implement the logic to update the user name in the Subsocial network or Polkadot extension
+        // For demonstration, we'll just update the displayed name
+        document.getElementById('userName').textContent = `Name: ${newUserName}`;
+        document.getElementById('updateProfileForm').style.display = 'none';
+    }
+});
+
+// Call the function to display user profile
+displayUserProfile();
+<!-- Existing HTML content... -->
+
+<!-- Notifications -->
+<h2>Notifications</h2>
+<div id="notifications"></div>
+
+<!-- Existing scripts... -->
+import { SubsocialApi } from './node_modules/@subsocial/api/bundled/subsocial.js';
+import { web3Enable, web3Accounts, web3FromAddress } from './node_modules/@polkadot/extension-dapp/bundled/extension.js';
+
+async function initializeSubsocial() {
+    try {
+        // Initialize the Subsocial API
+        const api = await SubsocialApi.create({
+            substrateNodeUrl: 'wss://rpc.polkadot.io',
+            ipfsNodeUrl: 'https://crustwebsites.net'
+        });
+
+        // Enable Polkadot.js extension    
+        const extensions = await web3Enable('Veilix');
+        if (extensions.length === 0) {     
+            throw new Error('No extension found');
+        }
+
+        // Get accounts from Polkadot.js extension
+        const accounts = await web3Accounts();
+        console.log(accounts);
+
+        // Display user profile
+        displayUserProfile();
+
+    } catch (error) {
+        console.error('Failed to initialize Subsocial:', error);
+    }
+}
+
+// Function to display user profile
+async function displayUserProfile() {
+    const accounts = await web3Accounts();
+    const selectedAccount = accounts[0];
+    document.getElementById('userName').textContent = `Name: ${selectedAccount.meta.name}`;
+    document.getElementById('userAddress').textContent = `Address: ${selectedAccount.address}`;
+}
+
+// Event listener for updating profile
+document.getElementById('updateProfileButton').addEventListener('click', () => {
+    document.getElementById('updateProfileForm').style.display = 'block';
+});
+
+// Event listener for saving profile
+document.getElementById('saveProfileButton').addEventListener('click', async () => {
+    const newUserName = document.getElementById('newUserName').value;
+    if (newUserName) {
+        const accounts = await web3Accounts();
+        const selectedAccount = accounts[0];
+        // Here you would implement the logic to update the user name in the Subsocial network or Polkadot extension
+        // For demonstration, we'll just update the displayed name
+        document.getElementById('userName').textContent = `Name: ${newUserName}`;
+        document.getElementById('updateProfileForm').style.display = 'none';
+    }
+});
+
+// Function to add a notification
+function addNotification(message) {
+    const notificationsDiv = document.getElementById('notifications');
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notificationsDiv.appendChild(notification);
+}
+
+// Example of adding a notification when a new post is created
+async function createPost(title, content) {
+    try {
+        const accounts = await web3Accounts();
+        const selectedAccount = accounts[0];
+        const injector = await web3FromAddress(selectedAccount.address);
+
+        const { postId } = await api.posts.createPost({
+            title,
+            content
+        }, selectedAccount.address, injector.signer);
+
+        console.log('Post created with ID:', postId);
+        addNotification(`New post created: ${title}`);
+    } catch (error) {
+        console.error('Failed to create post:', error);
+    }
+}
+
+// Function to toggle dark mode
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+    } else {
+        localStorage.setItem('darkMode', 'disabled');
+    }
+}
+
+// Event listener for toggling dark mode
+document.getElementById('toggleThemeButton').addEventListener('click', toggleDarkMode);
+
+// Initial dark mode setup
+if (localStorage.getItem('darkMode') === 'enabled') {
+    document.body.classList.add('dark-mode');
+}
+
+// Call the function to initialize
+initializeSubsocial().catch(console.error);
