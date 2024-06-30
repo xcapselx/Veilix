@@ -532,4 +532,69 @@ initializePolkadotAPI().then(({ api, account }) => {
   console.log('Account:', account);
 
   displayNotification('Polkadot API initialized and account connected.');
-}).
+}).catch(console.error);
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import io from 'socket.io-client';
+
+// Initialize the Polkadot API and handle user authentication
+async function initializePolkadotAPI() {
+  const provider = new WsProvider('wss://rpc.polkadot.io');
+  const api = await ApiPromise.create({ provider });
+
+  // Enable Polkadot.js extension
+  const extensions = await web3Enable('Veilix');
+  if (extensions.length === 0) {
+    throw new Error('No extension found');
+  }
+
+  // Get accounts from Polkadot.js extension
+  const accounts = await web3Accounts();
+  console.log(accounts);
+
+  // Select the first account as the default account
+  const account = accounts[0];
+
+  // Get the signer for the account
+  const injector = await web3FromAddress(account.address);
+
+  // Set the signer for the API
+  api.setSigner(injector.signer);
+
+  return { api, account };
+}
+
+// Display notification
+function displayNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.innerText = message;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    document.body.removeChild(notification);
+  }, 3000);
+}
+
+// Initialize WebSocket connection
+function initializeWebSocket() {
+  const socket = io('http://localhost:3000'); // Update with your WebSocket server URL
+
+  socket.on('connect', () => {
+    console.log('Connected to WebSocket server');
+  });
+
+  socket.on('data', (data) => {
+    console.log('Received data:', data);
+    displayNotification('New data received from Polkadot network');
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Disconnected from WebSocket server');
+  });
+}
+
+// Call the function to initialize
+initializePolkadotAPI().then(() => {
+  initializeWebSocket();
+}).catch(console.error);
