@@ -7,196 +7,6 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@subsocial/grill-widget"></script>
-  <script src="app.js" defer></script>
-  <script src="router.js" defer></script>
-</head>
-<body>
-  <div id="app">
-    <h1>Veilix</h1>
-    
-    <!-- Balance Display -->
-    <div id="balance"></div>
-    
-    <!-- Login Form -->
-    <form id="login-form" class="hidden">
-      <input type="email" id="login-email" placeholder="Email" required>
-      <input type="password" id="login-password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-    
-    <!-- Register Form -->
-    <form id="register-form">
-      <input type="email" id="register-email" placeholder="Email" required>
-      <input type="password" id="register-password" placeholder="Password" required>
-      <button type="submit">Register</button>
-    </form>
-    
-    <!-- Logout Button -->
-    <button id="logout-button" class="hidden">Logout</button>
-    
-    <!-- Grill Widget Container -->
-    <div id="grill"></div>
-    
-    <!-- Network Data -->
-    <div id="networkData">
-      <h2>Polkadot Network Data</h2>
-      <p id="blockNumber">Current Block: Loading...</p>
-      <p id="validators">Validators: Loading...</p>
-    </div>
-    
-    <!-- Transaction Section -->
-    <div id="transaction">
-      <h2>Make a Transaction</h2>
-      <button onclick="makeTransaction()">Send Transaction</button>
-    </div>
-    
-    <!-- User Profile Management -->
-    <h2>User Profile</h2>
-    <div id="userProfile">
-      <p id="userName"></p>
-      <p id="userAddress"></p>
-      <button id="updateProfileButton">Update Profile</button>
-    </div>
-
-    <!-- Update Profile Form -->
-    <div id="updateProfileForm" class="hidden">
-      <input type="text" id="newUserName" placeholder="New User Name" required>
-      <button id="saveProfileButton">Save</button>
-    </div>
-    
-    <!-- File Upload Form -->
-    <h2>Upload a File</h2>
-    <form id="fileForm">
-      <input type="file" id="fileInput" required>
-      <button type="submit">Upload File</button>
-    </form>
-    
-    <!-- Post Creation Form -->
-    <h2>Create a Post</h2>
-    <form id="postForm">
-      <input type="text" id="postTitle" placeholder="Post Title" required>
-      <textarea id="postContent" placeholder="Post Content" required></textarea>
-      <button type="submit">Create Post</button>
-    </form>
-  </div>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Veilix</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@subsocial/grill-widget"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="app.js" defer></script>
-  <script src="router.js" defer></script>
-</head>
-<body>
-  <div id="app">
-    <h1>Veilix</h1>
-    
-    <!-- Balance Display -->
-    <div id="balance"></div>
-    
-    <!-- Login Form -->
-    <form id="login-form" class="hidden">
-      <input type="email" id="login-email" placeholder="Email" required>
-      <input type="password" id="login-password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-    
-    <!-- Register Form -->
-    <form id="register-form">
-      <input type="email" id="register-email" placeholder="Email" required>
-      <input type="password" id="register-password" placeholder="Password" required>
-      <button type="submit">Register</button>
-    </form>
-    
-    <!-- Logout Button -->
-    <button id="logout-button" class="hidden">Logout</button>
-    
-    <!-- Grill Widget Container -->
-    <div id="grill"></div>
-    
-    <!-- Network Data -->
-    <div id="networkData">
-      <h2>Polkadot Network Data</h2>
-      <p id="blockNumber">Current Block: Loading...</p>
-      <p id="validators">Validators: Loading...</p>
-      <canvas id="networkChart"></canvas>
-    </div>
-    
-    <!-- Transaction Section -->
-    <div id="transaction">
-      <h2>Make a Transaction</h2>
-      <button onclick="makeTransaction()">Send Transaction</button>
-    </div>
-    
-    <!-- User Profile Management -->
-    <h2>User Profile</h2>
-    <div id="userProfile">
-      <p id="userName"></p>
-      <p id="userAddress"></p>
-      <button id="updateProfileButton">Update Profile</button>
-    </div>
-
-    <!-- Update Profile Form -->
-    <div id="updateProfileForm" class="hidden">
-      <input type="text" id="newUserName" placeholder="New User Name" required>
-      <button id="saveProfileButton">Save</button>
-    </div>
-    
-    <!-- File Upload Form -->
-    <h2>Upload a File</h2>
-    <form id="fileForm">
-      <input type="file" id="fileInput" required>
-      <button type="submit">Upload File</button>
-    </form>
-    
-    <!-- Post Creation Form -->
-    <h2>Create a Post</h2>
-    <form id="postForm">
-      <input type="text" id="postTitle" placeholder="Post Title" required>
-      <textarea id="postContent" placeholder="Post Content" required></textarea>
-      <button type="submit">Create Post</button>
-    </form>
-    
-    <!-- Activity Log -->
-    <h2>Activity Log</h2>
-    <div id="activityLog"></div>
-    <canvas id="activityLogChart"></canvas>
-  </div>
-</body>
-</html>
-<!-- Add this in the head section of your index.html -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-<!-- Add ReCaptcha to the forms in your index.html -->
-<form id="login-form" class="hidden">
-  <input type="email" id="login-email" placeholder="Email" required>
-  <input type="password" id="login-password" placeholder="Password" required>
-  <div class="g-recaptcha" data-sitekey="your-site-key"></div>
-  <button type="submit">Login</button>
-</form>
-
-<form id="register-form">
-  <input type="email" id="register-email" placeholder="Email" required>
-  <input type="password" id="register-password" placeholder="Password" required>
-  <div class="g-recaptcha" data-sitekey="your-site-key"></div>
-  <button type="submit">Register</button>
-</form>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Veilix</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@subsocial/grill-widget"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script src="app.js" defer></script>
@@ -275,5 +85,43 @@
     </form>
 
     <!-- Comments Section -->
-    <h2
+    <h2>Comments</h2>
+    <form id="commentForm">
+      <input type="text" id="commentPostId" placeholder="Post ID" required>
+      <textarea id="commentText" placeholder="Add a comment" required></textarea>
+      <button type="submit">Add Comment</button>
+    </form>
 
+    <!-- Like Post Section -->
+    <h2>Like a Post</h2>
+    <div>
+      <input type="text" id="likePostId" placeholder="Post ID" required>
+      <button id="likeButton">Like Post</button>
+    </div>
+
+    <!-- Search Posts Section -->
+    <h2>Search Posts</h2>
+    <form id="searchForm">
+      <input type="text" id="searchQuery" placeholder="Search..." required>
+      <button type="submit">Search</button>
+    </form>
+    <div id="searchResults"></div>
+
+    <!-- Account Settings -->
+    <h2>Account Settings</h2>
+    <div>
+      <input type="email" id="newEmail" placeholder="New Email" required>
+      <button id="updateEmailButton">Update Email</button>
+    </div>
+    <div>
+      <input type="password" id="newPassword" placeholder="New Password" required>
+      <button id="updatePasswordButton">Update Password</button>
+    </div>
+
+    <!-- Activity Log -->
+    <h2>Activity Log</h2>
+    <div id="activityLog"></div>
+    <canvas id="activityLogChart"></canvas>
+  </div>
+</body>
+</html>
