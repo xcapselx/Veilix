@@ -1,6 +1,7 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { SubsocialApi } from '@subsocial/api';
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
+import grill from '@subsocial/grill-widget';
 
 async function initializeSubsocial() {
     try {
@@ -33,7 +34,7 @@ async function initializeSubsocial() {
             },
             channel: {
                 type: "channel",
-                id: "185226",
+                id: "185226", // use your specific channel id if available
                 settings: {
                     enableBackButton: false,
                     enableLoginButton: true,
@@ -41,8 +42,8 @@ async function initializeSubsocial() {
                 }
             }
         };
-        
-        window.GRILL.init(config);
+
+        grill.init(config);
     } catch (error) {
         console.error(error);
     }
