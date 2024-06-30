@@ -4,9 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veilix</title>
-    <script type="module" src="app.js"></script>
 </head>
 <body>
+    <h1>Welcome to Veilix</h1>
+    <div id="account"></div>
     <div id="grill"></div>
+
+    <!-- Post Creation Form -->
+    <h2>Create a Post</h2>
+    <form id="postForm">
+        <input type="text" id="postTitle" placeholder="Post Title" required>
+        <textarea id="postContent" placeholder="Post Content" required></textarea>
+        <button type="submit">Create Post</button>
+    </form>
+
+    <script src="app.js"></script>
 </body>
 </html>
+<!-- Existing HTML content... -->
+
+<!-- File Upload Form -->
+<h2>Upload a File</h2>
+<form id="fileForm">
+    <input type="file" id="fileInput" required>
+    <button type="submit">Upload File</button>
+</form>
+
+<!-- Existing scripts... -->
