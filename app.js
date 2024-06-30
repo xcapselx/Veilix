@@ -985,3 +985,168 @@ initializePolkadotAPI().then(({ api }) => {
     displayUserProfile();
     handleRealTimeNotifications(api); // Add this line
 }).catch(console.error);
+// Function to initialize the activity log chart
+function initializeActivityLogChart() {
+    const ctx = document.getElementById('activityLogChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'User Activities',
+                data: [],
+                backgroundColor: 'rgba(255, 105, 180, 0.2)',
+                borderColor: 'hotpink',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Activity'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Count'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Update the logUserActivity function to update the chart
+function logUserActivity(activity) {
+    const logContainer = document.getElementById('activityLog');
+    const logEntry = document.createElement('div');
+    logEntry.textContent = `${new Date().toLocaleString()}: ${activity}`;
+    logContainer.appendChild(logEntry);
+
+    const chart = Chart.getChart('activityLogChart');
+    chart.data.labels.push(new Date().toLocaleTimeString());
+    chart.data.datasets[0].data.push(activity);
+    chart.update();
+}
+
+// Initialize the chart after document is loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    initializeActivityLogChart();
+});
+// Add this at the end of your app.js
+
+// Function to add a comment to a post
+async function addComment(postId, comment) {
+    try {
+        const accounts = await web3Accounts();
+        const selectedAccount = accounts[0];
+        const injector = await web3FromAddress(selectedAccount.address);
+
+        const { commentId } = await subsocialApi.comments.createComment({
+            postId,
+            body: comment
+        }, selectedAccount.address, injector.signer);
+
+        console.log('Comment added with ID:', commentId);
+        addNotification(`Comment added: ${comment}`);
+    } catch (error) {
+        console.error('Failed to add comment:', error);
+    }
+}
+
+// Event listener for adding a comment
+document.getElementById('commentForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const postId = document.getElementById('commentPostId').value;
+    const comment = document.getElementById('commentText').value;
+    await addComment(postId, comment);
+});
+
+// Function to like a post
+async function likePost(postId) {
+    try {
+        const accounts = await web3Accounts();
+        const selectedAccount = accounts[0];
+        const injector = await web3FromAddress(selectedAccount.address);
+
+        const { likeId } = await subsocialApi.likes.addLike(postId, selectedAccount.address, injector.signer);
+
+        console.log('Post liked with ID:', likeId);
+        addNotification(`Post liked: ${postId}`);
+    } catch (error) {
+        console.error('Failed to like post:', error);
+    }
+}
+
+// Event listener for liking a post
+document.getElementById('likeButton').addEventListener('click', async () => {
+    const postId = document.getElementById('likePostId').value;
+    await likePost(postId);
+});
+// Function to search posts
+async function searchPosts(query) {
+    try {
+        const posts = await subsocialApi.posts.getPosts({ search: query });
+        console.log('Search results:', posts);
+        displaySearchResults(posts);
+    } catch (error) {
+        console.error('Failed to search posts:', error);
+    }
+}
+
+// Function to display search results
+function displaySearchResults(posts) {
+    const searchResultsDiv = document.getElementById('searchResults');
+    searchResultsDiv.innerHTML = '';
+    posts.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.textContent = `Title: ${post.title}, Content: ${post.body}`;
+        searchResultsDiv.appendChild(postDiv);
+    });
+}
+
+// Event listener for search form submission
+document.getElementById('searchForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const query = document.getElementById('searchQuery').value;
+    await searchPosts(query);
+});
+// Function to update user email
+async function updateUserEmail(newEmail) {
+    try {
+        const user = auth.currentUser;
+        await user.updateEmail(newEmail);
+        console.log('User email updated');
+        displayNotification('User email updated successfully');
+    } catch (error) {
+        console.error('Error updating email:', error.message);
+        displayNotification('Error updating email');
+    }
+}
+
+// Function to update user password
+async function updateUserPassword(newPassword) {
+    try {
+        const user = auth.currentUser;
+        await user.updatePassword(newPassword);
+        console.log('User password updated');
+        displayNotification('User password updated successfully');
+    } catch (error) {
+        console.error('Error updating password:', error.message);
+        displayNotification('Error updating password');
+    }
+}
+
+// Event listeners for updating email and password
+document.getElementById('updateEmailButton').addEventListener('click', async () => {
+    const newEmail = document.getElementById('newEmail').value;
+    await updateUserEmail(newEmail);
+});
+
+document.getElementById('updatePasswordButton').addEventListener('click', async () => {
+    const newPassword = document.getElementById('newPassword').value;
+    await updateUserPassword(newPassword);
+});
