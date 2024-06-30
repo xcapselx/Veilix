@@ -1,0 +1,37 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\boydl\\Documents\\Veilix\\schrodingers-nft\\contracts\\veilixschrodingersNFT.sol": {
+      "lastModificationDate": 1719750774802,
+      "contentHash": "d41d8cd98f00b204e9800998ecf8427e",
+      "sourceName": "contracts/veilixschrodingersNFT.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [],
+      "artifacts": []
+    }
+  }
+}
