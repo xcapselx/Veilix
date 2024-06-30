@@ -4,16 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veilix</title>
-    <script src="https://path-to-grill-widget.js"></script> <!-- Replace with the actual path to the Grill widget script -->
+    <script type="module" src="app.js"></script>
+    <script src="https://unpkg.com/@subsocial/grill-widget@latest/dist/grill-widget.min.js"></script>
 </head>
 <body>
-    <div id="grill-widget"></div>
+    <div id="grill"></div>
     <script>
-        GrillWidget.init({
-            hubUuid: 'd0f3151e-11e8-43eb-bce8-1e9301016b58',
-            channels: ['General', 'Announcements', 'Development'],
-        });
+      const config = {
+        theme: "dark",
+        widgetElementId: "grill",
+        hub: {
+          id: "30308"
+        },
+        channel: {
+          type: "channel",
+          id: "185226",
+          settings: {
+            enableBackButton: false,
+            enableLoginButton: true,
+            enableInputAutofocus: true
+          }
+        }
+      };
+
+      window.GRILL.init(config);
     </script>
 </body>
 </html>
-<script type="module" src="app.js"></script>
