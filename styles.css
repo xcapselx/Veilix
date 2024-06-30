@@ -1,9 +1,7 @@
 /* styles.css */
-
-/* General styles */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #f5f5f5;
+    background-color: #ffe6f2; /* Light pink background */
     margin: 0;
     padding: 0;
     display: flex;
@@ -11,50 +9,39 @@ body {
     align-items: center;
     height: 100vh;
     color: #333;
-  }
-  
-  /* App container styles */
-  #app {
-    background-color: #fff;
+}
+
+#app {
+    background-color: #ffccf2; /* Slight pink hue for the main UI block */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     padding: 20px;
     max-width: 400px;
     width: 100%;
     text-align: center;
-  }
-  
-  /* Heading styles */
-  h1 {
+}
+
+h1 {
     font-size: 24px;
+    color: #ff69b4; /* Hot pink color */
     margin-bottom: 20px;
-  }
-  
-  /* Balance styles */
-  #balance {
+}
+
+form {
     margin-bottom: 20px;
-    font-size: 18px;
-    color: #28a745;
-  }
-  
-  /* Form styles */
-  form {
-    margin-bottom: 20px;
-  }
-  
-  /* Input styles */
-  input {
+}
+
+input {
     width: calc(100% - 22px);
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-  }
-  
-  /* Button styles */
-  button {
-    background-color: #007bff;
+}
+
+button {
+    background-color: #ff69b4; /* Hot pink color */
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -62,14 +49,13 @@ body {
     cursor: pointer;
     font-size: 16px;
     margin-top: 10px;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Notification styles */
-  .notification {
+}
+
+button:hover {
+    background-color: #ff5ea0; /* Slightly darker hot pink */
+}
+
+.notification {
     background-color: #28a745;
     color: #fff;
     padding: 10px;
@@ -78,35 +64,20 @@ body {
     top: 20px;
     right: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
-  
-  /* Hidden class for hiding elements */
-  .hidden {
+}
+
+.hidden {
     display: none;
-  }
-  
-  /* Navigation styles */
-  nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    background-color: #333;
-  }
-  
-  nav ul li {
-    margin: 0;
-  }
-  
-  nav ul li a {
-    color: white;
-    padding: 14px 20px;
-    display: block;
-    text-decoration: none;
-  }
-  
-  nav ul li a:hover {
-    background-color: #575757;
-  }
+}
+
+#balance {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #28a745;
+}
+
+#networkChart {
+    margin-top: 20px;
+}
+
     
