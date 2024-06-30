@@ -251,3 +251,129 @@ if (localStorage.getItem('darkMode') === 'enabled') {
 
 // Call the function to initialize
 initializeSubsocial().catch(console.error);
+import { ApiPromise, WsProvider } from '@polkadot/api';
+
+// Function to initialize Polkadot API and fetch network data
+async function initializePolkadotApi() {
+    try {
+        const wsProvider = new WsProvider('wss://rpc.polkadot.io');
+        const api = await ApiPromise.create({ provider: wsProvider });
+
+        // Fetch the current block number
+        const lastHeader = await api.rpc.chain.getHeader();
+        document.getElementById('blockNumber').textContent = `Current Block: ${lastHeader.number}`;
+
+        // Fetch the list of validators
+        const validators = await api.query.session.validators();
+        const validatorAddresses = validators.map(validator => validator.toString());
+        document.getElementById('validators').textContent = `Validators: ${validatorAddresses.join(', ')}`;
+
+    } catch (error) {
+        console.error('Failed to initialize Polkadot API:', error);
+    }
+}
+
+// Call the function to initialize Polkadot API
+initializePolkadotApi().catch(console.error);
+import { SubsocialApi } from '@subsocial/api';
+import { web3Enable, web3Accounts, web3FromSource } from '@polkadot/extension-dapp';
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import grill from '@subsocial/grill-widget';
+
+// Function to initialize Subsocial API and Polkadot API
+async function initializeApis() {
+    try {
+        // Initialize the Subsocial API
+        const subsocialApi = await SubsocialApi.create({
+            substrateNodeUrl: 'wss://rpc.polkadot.io',
+            ipfsNodeUrl: 'https://crustwebsites.net'
+        });
+
+        // Enable Polkadot.js extension
+        const extensions = await web3Enable('Veilix');
+        if (extensions.length === 0) {
+            throw new Error('No extension found');
+        }
+
+        // Get accounts from Polkadot.js extension
+        const accounts = await web3Accounts();
+        console.log(accounts);
+
+        // Display accounts in the UI
+        const accountsList = document.getElementById('accountsList');
+        accounts.forEach((account) => {
+            const accountItem = document.createElement('li');
+            accountItem.textContent = account.address;
+            accountsList.appendChild(accountItem);
+        });
+
+        // Initialize Polkadot API
+        const wsProvider = new WsProvider('wss://rpc.polkadot.io');
+        const api = await ApiPromise.create({ provider: wsProvider });
+
+        // Fetch the current block number
+        const lastHeader = await api.rpc.chain.getHeader();
+        document.getElementById('blockNumber').textContent = `Current Block: ${lastHeader.number}`;
+
+        // Fetch the list of validators
+        const validators = await api.query.session.validators();
+        const validatorAddresses = validators.map(validator => validator.toString());
+        document.getElementById('validators').textContent = `Validators: ${validatorAddresses.join(', ')}`;
+
+    } catch (error) {
+        console.error('Failed to initialize APIs:', error);
+    }
+}
+
+// Call the function to initialize APIs
+initializeApis().catch(console.error);
+
+// Grill Widget Configuration
+const config = {
+    theme: 'dark',
+    widgetElementId: 'grill',
+    hub: {
+        id: '30308'
+    },
+    channel: {
+        type: 'channel',
+        id: '185226',
+        settings: {
+            enableBackButton: false,
+            enableLoginButton: true,
+            enableInputAutofocus: true
+        }
+    }
+};
+
+// Initialize Grill Widget
+grill.init(config);
+// Add this function inside your app.js
+async function makeTransaction() {
+    try {
+        // Ensure the APIs are initialized
+        const api = await initializeApis();
+
+        // Get the account to make the transaction from
+        const accounts = await web3Accounts();
+        if (accounts.length === 0) {
+            throw new Error('No accounts found');
+        }
+        const account = accounts[0];
+        
+        // Get the injector for the account
+        const injector = await web3FromSource(account.meta.source);
+
+        // Make the transaction
+        const transfer = api.tx.balances.transfer('<RECIPIENT_ADDRESS>', 1000000000000);
+        const hash = await transfer.signAndSend(account.address, { signer: injector.signer });
+
+        console.log('Transaction sent with hash:', hash.toHex());
+
+    } catch (error) {
+        console.error('Failed to make transaction:', error);
+    }
+}
+
+// Call the function to make a transaction
+makeTransaction().catch(console.error);
