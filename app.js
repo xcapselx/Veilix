@@ -903,3 +903,95 @@ initializeSubsocialAPI().catch(console.error);
 
 // Initially show the login form
 toggleForms(true);
+// app.js
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import { SubsocialApi } from '@subsocial/api';
+import io from 'socket.io-client';
+
+async function initializePolkadotAPI() {
+  const provider = new WsProvider('wss://rpc.polkadot.io');
+  const api = await ApiPromise.create({ provider });
+
+  const extensions = await web3Enable('Veilix');
+  if (extensions.length === 0) {
+    throw new Error('No extension found');
+  }
+
+  const accounts = await web3Accounts();
+  console.log(accounts);
+
+  const account = accounts[0];
+  const injector = await web3FromAddress(account.address);
+  api.setSigner(injector.signer);
+
+  // Fetch account balance
+  const { data: balance } = await api.query.system.account(account.address);
+  console.log(`Balance of ${account.address}: ${balance.free.toHuman()}`);
+
+  return { api, account };
+}
+
+async function initializeSubsocialAPI() {
+  const subsocialApi = await SubsocialApi.create({
+    substrateNodeUrl: 'wss://rpc.polkadot.io',
+    ipfsNodeUrl: 'https://crustwebsites.net'
+  });
+
+  console.log('Subsocial API initialized');
+  return subsocialApi;
+}
+
+function displayNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.innerText = message;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    document.body.removeChild(notification);
+  }, 3000);
+}
+
+function initializeWebSocket() {
+  const socket = io('http://localhost:3000');
+  socket.on('connect', () => {
+    console.log('Connected to WebSocket server');
+  });
+
+  socket.on('data', (data) => {
+    console.log('Received data:', data);
+    displayNotification('New data received from Polkadot network');
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Disconnected from WebSocket server');
+  });
+}
+
+// Grill widget configuration
+const grillConfig = {
+  theme: "dark",
+  widgetElementId: "grill",
+  hub: {
+    id: "30308"  // Your actual hub ID
+  },
+  channel: {
+    type: "channel",
+    id: "185226",  // Your actual channel ID
+    settings: {
+      enableBackButton: false,
+      enableLoginButton: true,
+      enableInputAutofocus: true
+    }
+  }
+};
+
+window.GRILL.init(grillConfig);
+
+// Initialize the application
+initializePolkadotAPI().then(() => {
+  initializeWebSocket();
+}).catch(console.error);
+
+initializeSubsocialAPI().catch(console.error);
