@@ -598,3 +598,87 @@ function initializeWebSocket() {
 initializePolkadotAPI().then(() => {
   initializeWebSocket();
 }).catch(console.error);
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { web3Enable, web3Accounts, web3FromAddress } from '@polkadot/extension-dapp';
+import { auth } from './firebase-config';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import io from 'socket.io-client';
+
+async function initializePolkadotAPI() {
+  const provider = new WsProvider('wss://rpc.polkadot.io');
+  const api = await ApiPromise.create({ provider });
+
+  const extensions = await web3Enable('Veilix');
+  if (extensions.length === 0) {
+    throw new Error('No extension found');
+  }
+
+  const accounts = await web3Accounts();
+  console.log(accounts);
+
+  const account = accounts[0];
+  const injector = await web3FromAddress(account.address);
+  api.setSigner(injector.signer);
+
+  return { api, account };
+}
+
+function displayNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.innerText = message;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    document.body.removeChild(notification);
+  }, 3000);
+}
+
+function initializeWebSocket() {
+  const socket = io('http://localhost:3000');
+  socket.on('connect', () => {
+    console.log('Connected to WebSocket server');
+  });
+
+  socket.on('data', (data) => {
+    console.log('Received data:', data);
+    displayNotification('New data received from Polkadot network');
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Disconnected from WebSocket server');
+  });
+}
+
+// User Authentication Functions
+async function registerUser(email, password) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log('User registered:', userCredential.user);
+  } catch (error) {
+    console.error('Error registering user:', error.message);
+  }
+}
+
+async function loginUser(email, password) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log('User logged in:', userCredential.user);
+  } catch (error) {
+    console.error('Error logging in user:', error.message);
+  }
+}
+
+async function logoutUser() {
+  try {
+    await signOut(auth);
+    console.log('User logged out');
+  } catch (error) {
+    console.error('Error logging out user:', error.message);
+  }
+}
+
+// Initialize the application
+initializePolkadotAPI().then(() => {
+  initializeWebSocket();
+}).catch(console.error);
