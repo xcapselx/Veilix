@@ -12,7 +12,7 @@ import winston from 'winston';
 // Initialize IPFS client
 const ipfs = create('https://crustwebsites.net');
 
-// Logger setup
+// Initialize logger
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
@@ -72,7 +72,6 @@ async function initializeSubsocial() {
     grill.init(grillConfig);
   } catch (error) {
     console.error(error);
-    logger.error('Failed to initialize Subsocial:', error);
   }
 }
 
@@ -97,7 +96,6 @@ async function createPost(title, content) {
   }
 }
 
-// Event listener for post form submission
 document.getElementById('postForm').addEventListener('submit', async (event) => {
   event.preventDefault();
   const title = document.getElementById('postTitle').value;
@@ -115,7 +113,6 @@ async function uploadFile(file) {
   }
 }
 
-// Event listener for file form submission
 document.getElementById('fileForm').addEventListener('submit', async (event) => {
   event.preventDefault();
   const fileInput = document.getElementById('fileInput');
@@ -125,7 +122,6 @@ document.getElementById('fileForm').addEventListener('submit', async (event) => 
   }
 });
 
-// Display user profile
 async function displayUserProfile() {
   const accounts = await web3Accounts();
   const selectedAccount = accounts[0];
@@ -133,12 +129,10 @@ async function displayUserProfile() {
   document.getElementById('userAddress').textContent = `Address: ${selectedAccount.address}`;
 }
 
-// Event listener for updating profile
 document.getElementById('updateProfileButton').addEventListener('click', () => {
   document.getElementById('updateProfileForm').style.display = 'block';
 });
 
-// Event listener for saving profile
 document.getElementById('saveProfileButton').addEventListener('click', async () => {
   const newUserName = document.getElementById('newUserName').value;
   if (newUserName) {
@@ -151,7 +145,6 @@ document.getElementById('saveProfileButton').addEventListener('click', async () 
 
 displayUserProfile();
 
-// Function to add a notification
 function addNotification(message) {
   const notificationsDiv = document.getElementById('notifications');
   const notification = document.createElement('div');
@@ -159,24 +152,21 @@ function addNotification(message) {
   notificationsDiv.appendChild(notification);
 }
 
-// Function to toggle dark mode
 function toggleDarkMode() {
   document.body.classList.toggle('dark-mode');
   if (document.body.classList.contains('dark-mode')) {
     localStorage.setItem('darkMode', 'enabled');
   } else {
     localStorage.setItem('darkMode', 'disabled');
+  }
 }
 
-// Event listener for toggling dark mode
 document.getElementById('toggleThemeButton').addEventListener('click', toggleDarkMode);
 
-// Initial dark mode setup
 if (localStorage.getItem('darkMode') === 'enabled') {
   document.body.classList.add('dark-mode');
 }
 
-// Initialize Polkadot API and fetch network data
 async function initializePolkadotApi() {
   try {
     const wsProvider = new WsProvider('wss://rpc.polkadot.io');
@@ -188,15 +178,17 @@ async function initializePolkadotApi() {
     const validators = await api.query.session.validators();
     const validatorAddresses = validators.map(validator => validator.toString());
     document.getElementById('validators').textContent = `Validators: ${validatorAddresses.join(', ')}`;
+
+    // Render the chart
+    renderChart(validatorAddresses);
+
   } catch (error) {
     console.error('Failed to initialize Polkadot API:', error);
-    logger.error('Failed to initialize Polkadot API:', error);
   }
 }
 
 initializePolkadotApi().catch(console.error);
 
-// Function to make a transaction
 async function makeTransaction() {
   try {
     const { api, account } = await initializePolkadotAPI();
@@ -208,14 +200,11 @@ async function makeTransaction() {
     console.log('Transaction sent with hash:', hash.toHex());
   } catch (error) {
     console.error('Failed to make transaction:', error);
-    logger.error('Failed to make transaction:', error);
   }
 }
 
-// Call the function to make a transaction
 makeTransaction().catch(console.error);
 
-// User authentication functions
 async function registerUser(email, password) {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -252,104 +241,204 @@ async function logoutUser() {
   }
 }
 
-// Toggle forms visibility
 function toggleForms(showLogin) {
   document.getElementById('login-form').classList.toggle('hidden', !showLogin);
   document.getElementById('register-form').classList.toggle('hidden', showLogin);
   document.getElementById('logout-button').classList.toggle('hidden', showLogin);
 }
 
-// Initialize the application
 initializePolkadotAPI().then(() => {
   initializeWebSocket();
 }).catch(console.error);
 
 initializeSubsocialAPI().catch(console.error);
 
-// Initially show the login form
 toggleForms(true);
 
-// Initialize WebSocket connection
+function displayNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.innerText = message;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    document.body.removeChild(notification);
+  }, 3000);
+}
+
 function initializeWebSocket() {
-  const socket = io('http://localhost:3000'); // Update with your WebSocket server URL
+  const socket = io('http://localhost:3000');
 
   socket.on('connect', () => {
     console.log('Connected to WebSocket server');
   });
 
-  socket.on('data
-    initializeSubsocialAPI().catch(console.error);
+  socket.on('data', (data) => {
+    console.log('Received data:', data);
+    displayNotification('New data received from Polkadot network');
+    document.getElementById('blockNumber').textContent = `Current Block: ${data.blockNumber}`;
+    document.getElementById('validators').textContent = `Validators: ${data.validators.join(', ')}`;
+  });
 
-    // Initially show the login form
-    toggleForms(true);
-    
-    // Initialize WebSocket connection
-    function initializeWebSocket() {
-      const socket = io('http://localhost:3000'); // Update with your WebSocket server URL
-    
-      socket.on('connect', () => {
-        console.log('Connected to WebSocket server');
-      });
-    
-      socket.on('data', (data) => {
-        console.log('Received data:', data);
-        displayNotification('New data received from Polkadot network');
-        // Update UI with the received data
-        document.getElementById('blockNumber').textContent = `Current Block: ${data.blockNumber}`;
-        document.getElementById('validators').textContent = `Validators: ${data.validators.join(', ')}`;
-        updateChart(data.blockNumber, data.validators.length);
-      });
-    
-      socket.on('disconnect', () => {
-        console.log('Disconnected from WebSocket server');
-      });
+  socket.on('disconnect', () => {
+    console.log('Disconnected from WebSocket server');
+  });
+}
+
+async function initializePolkadotAPI() {
+  try {
+    const provider = new WsProvider('wss://rpc.polkadot.io');
+    const api = await ApiPromise.create({ provider });
+
+    const extensions = await web3Enable('Veilix');
+    if (extensions.length === 0) {
+      throw new Error('No extension found');
     }
-    
-    // Function to update the chart with new data
-    function updateChart(blockNumber, validatorsCount) {
-      const chart = Chart.getChart('networkChart');
-      chart.data.labels.push(blockNumber);
-      chart.data.datasets[0].data.push(validatorsCount);
-      chart.update();
-    }
-    
-    // Function to initialize the chart
-    function initializeChart() {
-      const ctx = document.getElementById('networkChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: [],
-          datasets: [{
-            label: 'Validators Count',
-            data: [],
-            borderColor: 'hotpink',
-            backgroundColor: 'rgba(255, 105, 180, 0.2)',
-            borderWidth: 1
-          }]
+
+    const accounts = await web3Accounts();
+    console.log(accounts);
+
+    const account = accounts[0];
+    const injector = await web3FromAddress(account.address);
+    api.setSigner(injector.signer);
+
+    return { api, account };
+  } catch (error) {
+    logger.error('Failed to initialize Polkadot API:', error);
+    displayNotification('Failed to initialize Polkadot API');
+    throw error;
+  }
+}
+
+function updateChart(blockNumber, validatorsCount) {
+  const chart = Chart.getChart('networkChart');
+  chart.data.labels.push(blockNumber);
+  chart.data.datasets[0].data.push(validatorsCount);
+  chart.update();
+}
+
+function initializeChart() {
+  const ctx = document.getElementById('networkChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [{
+        label: 'Validators Count',
+        data: [],
+        borderColor: 'hotpink',
+        backgroundColor: 'rgba(255, 105, 180, 0.2)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Block Number'
+          }
         },
-        options: {
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: 'Block Number'
-              }
-            },
-            y: {
-              title: {
-                display: true,
-                text: 'Validators Count'
-              }
+        y: {
+          title: {
+            display: true,
+            text: 'Validators Count'
+          }
+        }
+      }
+    }
+  });
+}
+
+initializePolkadotAPI().then(() => {
+  initializeWebSocket();
+  initializeChart();
+}).catch(console.error);
+ddresses) {
+    const ctx = document.getElementById('networkChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Validators Count',
+          data: [validatorAddresses.length],
+          borderColor: 'hotpink',
+          backgroundColor: 'rgba(255, 105, 180, 0.2)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Block Number'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Validators Count'
             }
           }
         }
-      });
-    }
-    
-    // Call the function to initialize
-    initializePolkadotAPI().then(() => {
-      initializeWebSocket();
-      initializeChart();
-    }).catch(console.error);
-    
+      }
+    });
+  }
+  
+  // Update the chart with new data
+  function updateChart(blockNumber, validatorsCount) {
+    const chart = Chart.getChart('networkChart');
+    chart.data.labels.push(blockNumber);
+    chart.data.datasets[0].data.push(validatorsCount);
+    chart.update();
+  }
+  
+  // Initialize the chart
+  function initializeChart() {
+    const ctx = document.getElementById('networkChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Validators Count',
+          data: [],
+          borderColor: 'hotpink',
+          backgroundColor: 'rgba(255, 105, 180, 0.2)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Block Number'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Validators Count'
+            }
+          }
+        }
+      }
+    });
+  }
+  
+  initializePolkadotAPI().then(() => {
+    initializeWebSocket();
+    initializeChart();
+  }).catch(console.error);
+  
+  // Initialize the application
+  initializePolkadotAPI().then(() => {
+    initializeWebSocket();
+    initializeChart();
+  }).catch(console.error);
+  initializeSubsocialAPI().catch(console.error);
+  
+  toggleForms(true);
