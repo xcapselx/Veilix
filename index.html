@@ -99,3 +99,121 @@
     <div id="grill"></div>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veilix</title>
+  <script type="module" src="./app.js" defer></script>
+  <script type="module" src="./router.js" defer></script>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="/" onclick="navigateTo(event, '/')">Home</a></li>
+      <li><a href="/about" onclick="navigateTo(event, '/about')">About</a></li>
+      <li><a href="/contact" onclick="navigateTo(event, '/contact')">Contact</a></li>
+    </ul>
+  </nav>
+  <div id="app"></div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veilix</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="./app.js" defer></script>
+  <script type="module" src="./router.js" defer></script>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="/" onclick="navigateTo(event, '/')">Home</a></li>
+      <li><a href="/about" onclick="navigateTo(event, '/about')">About</a></li>
+      <li><a href="/contact" onclick="navigateTo(event, '/contact')">Contact</a></li>
+    </ul>
+  </nav>
+  <div id="app"></div>
+</body>
+</html>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    background-color: #333;
+  }
+  
+  nav ul li {
+    margin: 0;
+  }
+  
+  nav ul li a {
+    color: white;
+    padding: 14px 20px;
+    display: block;
+    text-decoration: none;
+  }
+  
+  nav ul li a:hover {
+    background-color: #575757;
+  }
+  
+  #app {
+    padding: 20px;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    background-color: #333;
+  }
+  
+  nav ul li {
+    margin: 0;
+  }
+  
+  nav ul li a {
+    color: white;
+    padding: 14px 20px;
+    display: block;
+    text-decoration: none;
+  }
+  
+  nav ul li a:hover {
+    background-color: #575757;
+  }
+  
+  #app {
+    padding: 20px;
+  }
+  
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
